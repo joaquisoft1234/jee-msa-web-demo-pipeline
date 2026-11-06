@@ -146,11 +146,25 @@ stages:
             displayName: 'Descarga CLI, Login y Despliegue Docker'
 
   # ==========================================
-  # STAGE 4: NOTIFICACIONES (NOTIFICATIONS)
+  # STAGE 4: HEALTH CHECK
+  # ==========================================
+  - stage: HealthCheck
+    displayName: 'Health Check'
+    dependsOn: CD
+    condition: succeeded()
+    jobs:
+      - job: health_check
+        displayName: 'Health Check'
+        steps:
+          - script: echo "Health check pendiente de configurar."
+            displayName: 'Health Check'
+
+  # ==========================================
+  # STAGE 5: NOTIFICACIONES (NOTIFICATIONS)
   # ==========================================
   - stage: Notifications
     displayName: 'Notificar'
-    dependsOn: [CI, Approval, CD]
+    dependsOn: [CI, Approval, CD, HealthCheck]
     condition: always()
     jobs:
       - job: send_status_email
